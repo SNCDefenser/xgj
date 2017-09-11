@@ -16,6 +16,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ShoppingListActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden">
+
+        </activity>
+
+        <activity android:name=".MainButtonsActivity">
+
+        </activity>
+
+        <activity android:name=".ItemDetailActivity">
+
+        </activity>
     </application>
 
 </manifest>
