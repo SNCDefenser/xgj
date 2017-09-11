@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">xgj</string>
+    <string name="new_item">New Item</string>
+    <string name="shopping_list">Shopping List</string>
+    <string name="stock">Stock</string>
+    <string name="home_services">Home Services</string>
+    <string name="cancel">Cancel</string>
+    <string name="done">Done</string>
+    <string name="empty"></string>
+    <string name="action_settings">Settings</string>
+
 </resources>
