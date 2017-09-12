@@ -22,4 +22,10 @@ router.post('/login',
         res.redirect('/');
 });
 
+router.get("/test",
+function(req,res){
+    var r = {"result":"OK"};
+    res.status(200).send(r);
+});
+
 module.exports = router;
