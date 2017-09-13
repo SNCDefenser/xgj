@@ -50,7 +50,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
                 final PopupWindow itemDetail = new PopupWindow(detail,parent.getWidth(), parent.getHeight(), true);
                 final int position = holder.getAdapterPosition();
                 Item item = itemList.get(position);
-                itemDetail.showAtLocation(detail, Gravity.CENTER, 0, 0);
+                itemDetail.showAtLocation(detail, Gravity.CENTER_VERTICAL, 0, 0);
                 /*set name and image to popupwindow*/
                 ImageView image = (ImageView) detail.findViewById(R.id.item_detail_image);
                 image.setImageResource(item.getImageId());
