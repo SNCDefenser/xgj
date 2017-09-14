@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
+
 import android.widget.LinearLayout;
 
 import com.lidaxia.mylibrary.FlowTagLayout;
@@ -21,9 +22,11 @@ import java.util.List;
 public class ShoppingListActivity extends AppCompatActivity {
 
     private List<Item> itemList = new ArrayList<>();
+
     List<String> tags = new ArrayList<>();
     FlowTagLayout mFlowTagLayout;
     TagAdapter<String> mTagAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,5 +113,13 @@ public class ShoppingListActivity extends AppCompatActivity {
         tags.add("Easy");
         tags.add("Great");
         mTagAdapter.onlyAddAll(tags);
+                GridLayout grid = (GridLayout) findViewById(R.id.gridLayout);
+                if(grid.getVisibility() ==View.VISIBLE) {
+                    grid.setVisibility(View.GONE);
+                }else{
+                    grid.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 }
