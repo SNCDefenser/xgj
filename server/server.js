@@ -2,9 +2,15 @@ var express = require('express');
 var app = express();
 var port = process.env.PORT || 3000;
 
+// parse application/x-www-form-urlencoded
+app.use(require('body-parser').urlencoded({ extended: false }))
+// parse application/json
+app.use(require('body-parser').json())
+
 //initialize authorization module
-var auth = require('./auth');
-auth.init(app);
+
+var authJWT = require('./authJWT');
+authJWT.init(app);
 
 //initalize router module
 var router = require('./router');

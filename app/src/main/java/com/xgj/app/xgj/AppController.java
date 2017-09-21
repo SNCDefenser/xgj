@@ -2,6 +2,7 @@ package com.xgj.app.xgj;
 
 import android.app.Application;
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 import android.util.LruCache;
 
 
@@ -11,6 +12,8 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
 public class AppController extends Application{
+
+    public static final String TAG = AppController.class.getSimpleName();
 
     private static AppController controller;
 
@@ -36,8 +39,17 @@ public class AppController extends Application{
         return requestQueue;
     }
 
-    public <T> void addToRequestQueue(Request<T> req) {
+
+    public <T> void addToRequestQueue(Request<T> req, String tag) {
+        req.setTag(TextUtils.isEmpty(tag) ? TAG : tag);
         getRequestQueue().add(req);
+    }
+    
+
+    public void cancelPendingRequests(Object tag) {
+        if (requestQueue != null) {
+            requestQueue.cancelAll(tag);
+        }
     }
 
     public ImageLoader getImageLoader() {

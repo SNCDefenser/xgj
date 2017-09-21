@@ -25,12 +25,12 @@ var Authorize = function(){
   // by default, usernameField is username, here we change parameters - usernameField
   //  is userIdentity. It could be one of username, email, telephone.
   passport.use("local",new LocalStrategy({
-      usernameField: 'userIdentity',
+      usernameField: 'email',
       passwordField: 'password',
     },
     function(userIdentity, password, done) {
-        User.findOneWithPassword(userIdentity,function(err, user){
-          if (err) { return done(err); }
+        User.findOneWithPassword(userIdentity,function(e, user){
+          if (e) { return done(e); }
           if (!user) {
               return done(null, false, { message: 'Incorrect userIdentity.' });
           }
@@ -46,21 +46,27 @@ var Authorize = function(){
     }
   ));
 
-// used to serialize the user for the session.
-  passport.serializeUser(function(user, cb) {
-    var key = user.id;
-    cb(null, key);
-  });
+  // used to serialize the user for the session.
+passport.serializeUser(function(user, cb) {
+  var key = {
+    id: user.email,
+    name: user.firstName,
+    sessionDate: new Date()
+  }
+  cb(null, key);
+});
 
 // used to deserialize the user
-  passport.deserializeUser(function(key, cb) {
-    User.findOneById(key.id, function (err, user) {
-        if (err) { return cb(err); }
-        cb(null, user);
-      });
+passport.deserializeUser(function(key, cb) {
+  User.findOneWithPassword(key.id, function (err, user) {
+    if (err) { return cb(err); }
+    //user.type = "admin";
+    cb(null, user);
   });
-  console.log("Authorize init.");
+});
+console.log("Authorize init.");
 }
+
 var bodyParser = require('body-parser');
 Authorize.prototype.init = function(app){
   // parse application/x-www-form-urlencoded

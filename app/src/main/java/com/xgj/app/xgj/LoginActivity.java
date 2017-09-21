@@ -14,28 +14,45 @@ import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class LoginActivity extends AppCompatActivity {
-    private static final String TAG = "LoginActivity";
+    private static final String TAG = LoginActivity.class.getSimpleName();
     private static final int REQUEST_SIGNUP = 0;
 
+    private static final String GET_TOKEN = "GET_TOKEN";
+    private static final String VERFIFY_TOKEN = "VERIFY_TOKEN";
 
     private EditText emailText;
     private EditText passwordText;
     private Button loginButton;
     private TextView signupLink;
 
+    private SessionManager session;
+    private SQLiteHandler db;
+
+    private ProgressDialog progressDialog;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        progressDialog = new ProgressDialog(LoginActivity.this, R.style.AppTheme_Dark_Dialog);
+
+
+        // SQLite database handler
+        db = new SQLiteHandler(getApplicationContext());
+
+        // Session manager
+        session = new SessionManager(getApplicationContext());
+
 
         emailText = (EditText) findViewById(R.id.login_email);
         passwordText = (EditText) findViewById(R.id.login_password);
@@ -58,6 +75,14 @@ public class LoginActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_SIGNUP);
             }
         });
+
+        // Check if user is already logged in or not
+        if (session.isLoggedIn()) {
+
+            Map<String, String> params = db.getUserDetails();
+
+            getOrVeifyToken(VERFIFY_TOKEN, params);
+        }
     }
 
     public void login() {
@@ -70,48 +95,24 @@ public class LoginActivity extends AppCompatActivity {
 
         loginButton.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
-                R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Authenticating...");
-        progressDialog.show();
+        showProgressDialog();
 
-        String email = emailText.getText().toString();
-        String password = passwordText.getText().toString();
+        final String email = emailText.getText().toString();
+        final String password = passwordText.getText().toString();
 
         // TODO: Implement your own authentication logic here.
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
-                        // Get a RequestQueue
-                        String url = "http://10.0.2.2:3000/test";
-                        RequestQueue queue = AppController.getInstance().getRequestQueue();
-                        JsonObjectRequest req = new JsonObjectRequest
-                                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                        Map<String, String> params = new HashMap<String, String>();
+                        params.put("userIdentity",email);
+                        params.put("password",password);
 
-                                    @Override
-                                    public void onResponse(JSONObject response) {
-                                        Log.d(TAG, response.toString());
-                                        // On complete call either onLoginSuccess or onLoginFailed
-                                        onLoginSuccess();
-                                        // onLoginFailed();
-                                        progressDialog.dismiss();
-                                    }
-                                }, new Response.ErrorListener() {
-
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        // TODO Auto-generated method stub
-
-                                    }
-                                });
-                        queue.add(req);
-
+                        getOrVeifyToken(GET_TOKEN, params);
                     }
                 }, 3000);
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -131,37 +132,105 @@ public class LoginActivity extends AppCompatActivity {
         moveTaskToBack(true);
     }
 
+
+    public void getOrVeifyToken(String method, Map<String, String> params){
+        String url = "";
+        if(method.equals(GET_TOKEN)){
+            url = XgjConfigs.API_Domain + XgjConfigs.API_URL_LOGIN;
+        }else if(method.equals(VERFIFY_TOKEN)){
+            url = XgjConfigs.API_Domain + XgjConfigs.API_URL_AUTHORIZE;
+        }else{
+            onLoginFailed();
+        }
+
+        XgjJSONObjectRequest req = new XgjJSONObjectRequest
+                (Request.Method.POST, url, new JSONObject(params), new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject res) {
+
+                        try {
+                            Log.d(TAG, res.toString());
+
+                            session.setLogin(true);
+
+                            // Now store the user in SQLite
+                            String token = res.getString("token");
+
+                            JSONObject user = res.getJSONObject("user");
+                            String name = user.getString("name");
+                            String email = user.getString("email");
+
+                            db.addUser(name, email, token);
+
+                            onLoginSuccess();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO Auto-generated method stub
+                        onLoginFailed();
+                    }
+
+                });
+        req.setTag(TAG);
+
+        AppController.getInstance().addToRequestQueue(req, TAG);
+
+    }
+
+    public void showProgressDialog(){
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Authenticating...");
+        progressDialog.show();
+    }
+
+    public void hideProgressDialog(){
+        progressDialog.dismiss();
+    }
+
     public void onLoginSuccess() {
         loginButton.setEnabled(true);
-        //finish();
+        hideProgressDialog();
+
+        // User is already logged in. Take him to main activity
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     public void onLoginFailed() {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
 
         loginButton.setEnabled(true);
+        hideProgressDialog();
     }
 
     public boolean validate() {
         boolean valid = true;
-        return true;
-//        String email = emailText.getText().toString();
-//        String password = passwordText.getText().toString();
-//
-//        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-//            emailText.setError("enter a valid email address");
-//            valid = false;
-//        } else {
-//            emailText.setError(null);
-//        }
-//
-//        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-//            passwordText.setError("between 4 and 10 alphanumeric characters");
-//            valid = false;
-//        } else {
-//            passwordText.setError(null);
-//        }
-//
-//        return valid;
+        String email = emailText.getText().toString();
+        String password = passwordText.getText().toString();
+
+        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailText.setError("enter a valid email address");
+            valid = false;
+        } else {
+            emailText.setError(null);
+        }
+
+        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
+            passwordText.setError("between 4 and 10 alphanumeric characters");
+            valid = false;
+        } else {
+            passwordText.setError(null);
+        }
+
+        return valid;
     }
 }
