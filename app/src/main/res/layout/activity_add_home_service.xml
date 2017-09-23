@@ -136,7 +136,7 @@
             android:layout_marginTop="4dp"
             android:orientation="vertical">
 
-            <com.lidaxia.mylibrary.FlowTagLayout
+            <com.xgj.app.mylibrary.FlowTagLayout
                 android:id="@+id/tag_flow_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -176,7 +176,7 @@
             android:layout_marginTop="4dp"
             android:orientation="vertical">
 
-            <com.lidaxia.mylibrary.FlowTagLayout
+            <com.xgj.app.mylibrary.FlowTagLayout
                 android:id="@+id/frequency_flow_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

@@ -64,7 +64,7 @@
         app:layout_constraintRight_toRightOf="@+id/linearLayout"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
-        <com.lidaxia.mylibrary.FlowTagLayout
+        <com.xgj.app.mylibrary.FlowTagLayout
             android:id="@+id/tag_flow_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
