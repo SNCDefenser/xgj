@@ -1,4 +1,4 @@
-package com.lidaxia.mylibrary;
+package com.xgj.app.mylibrary;
 
 import android.view.View;
 

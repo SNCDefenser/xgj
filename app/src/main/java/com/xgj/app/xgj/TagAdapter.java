@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.lidaxia.mylibrary.OnInitSelectedPosition;
+import com.xgj.app.mylibrary.*;
 
 import java.util.ArrayList;
 import java.util.List;

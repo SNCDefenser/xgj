@@ -60,8 +60,7 @@ public class AddItem extends AppCompatActivity {
                         show();
                 break;
             case android.R.id.home:
-                Toast.makeText(this, "You clicked Backaaa", Toast.LENGTH_SHORT).
-                        show();
+                finish();
                 break;
             default:
         }

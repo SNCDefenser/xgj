@@ -81,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
 
             Map<String, String> params = db.getUserDetails();
 
-            getOrVeifyToken(VERFIFY_TOKEN, params);
+            getOrVerifyToken(VERFIFY_TOKEN, params);
         }
     }
 
@@ -109,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
                         params.put("userIdentity",email);
                         params.put("password",password);
 
-                        getOrVeifyToken(GET_TOKEN, params);
+                        getOrVerifyToken(GET_TOKEN, params);
                     }
                 }, 3000);
     }
@@ -133,7 +133,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    public void getOrVeifyToken(String method, Map<String, String> params){
+    public void getOrVerifyToken(String method, Map<String, String> params){
         String url = "";
         if(method.equals(GET_TOKEN)){
             url = XgjConfigs.API_Domain + XgjConfigs.API_URL_LOGIN;

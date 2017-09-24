@@ -12,8 +12,7 @@ import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 
-import com.lidaxia.mylibrary.FlowTagLayout;
-import com.lidaxia.mylibrary.OnTagSelectListener;
+import com.xgj.app.mylibrary.*;
 
 import java.util.ArrayList;
 import java.util.List;
