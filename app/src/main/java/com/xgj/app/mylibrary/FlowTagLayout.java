@@ -57,7 +57,7 @@ public class FlowTagLayout extends ViewGroup {
     /**
      * 存储选中的tag
      */
-    private SparseBooleanArray mCheckedTagArray = new SparseBooleanArray();
+    public SparseBooleanArray mCheckedTagArray = new SparseBooleanArray();
 
     public FlowTagLayout(Context context) {
         super(context);
@@ -259,6 +259,11 @@ public class FlowTagLayout extends ViewGroup {
                             mOnTagSelectListener.onItemSelect(FlowTagLayout.this, Arrays.asList(j));
                         }
                     } else if (mTagCheckMode == FLOW_TAG_CHECKED_MULTI) {
+
+                        //
+                        if (mOnTagClickListener != null) {
+                            mOnTagClickListener.onItemClick(FlowTagLayout.this, childView, j);
+                        }
                         if (mCheckedTagArray.get(j)) {
                             mCheckedTagArray.put(j, false);
                             childView.setSelected(false);
@@ -296,6 +301,10 @@ public class FlowTagLayout extends ViewGroup {
                 getChildAt(i).setSelected(false);
             }
         }
+    }
+
+    public void clearOption(int position) {
+        getChildAt(position).setSelected(false);
     }
 
     public void setOnTagClickListener(OnTagClickListener onTagClickListener) {
