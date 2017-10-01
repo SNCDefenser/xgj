@@ -108,13 +108,40 @@
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
-        android:drawableEnd="@drawable/ic_add_black_24dp"
-        android:drawableRight="@drawable/ic_add_black_24dp"
         android:text="Tags"
         android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText"
-        android:clickable="true"/>
+        app:layout_constraintTop_toBottomOf="@+id/editText"/>
+
+    <LinearLayout
+        android:id="@+id/linearLayout_selected_tag"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        android:paddingBottom="4dp"
+        android:visibility="visible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_tag"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="vertical"
+            tools:ignore="UselessParent">
+
+            <com.xgj.app.mylibrary.FlowTagLayout
+                android:id="@+id/tag_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -128,7 +155,7 @@
         android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_tag">
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout_selected_tag">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -149,8 +176,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:drawableEnd="@android:drawable/ic_menu_camera"
-        android:drawableRight="@android:drawable/ic_menu_camera"
         android:text="Expired Period"
         android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="parent"

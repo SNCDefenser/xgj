@@ -101,20 +101,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText"/>
 
-    <!--<LinearLayout-->
-        <!--android:id="@+id/linearLayout_selected_tag"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="vertical"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/textView_tag"-->
-        <!--tools:ignore="UselessParent">-->
-
-        <!--<com.xgj.app.mylibrary.FlowTagLayout-->
-            <!--android:id="@+id/tag_container"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content" />-->
-    <!--</LinearLayout>-->
-
     <LinearLayout
         android:id="@+id/linearLayout_selected_tag"
         android:layout_width="0dp"
