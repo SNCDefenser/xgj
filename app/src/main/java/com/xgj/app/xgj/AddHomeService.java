@@ -197,10 +197,17 @@ public class AddHomeService extends AppCompatActivity implements DatePickerDialo
         mTagAdapter_frequency = new TagAdapter<>(this);
         mFlowTagLayout_frequency.setTagCheckedMode(FlowTagLayout.FLOW_TAG_CHECKED_SINGLE);
         mFlowTagLayout_frequency.setAdapter(mTagAdapter_frequency);
+        final TextView frequency = (TextView) findViewById(R.id.textView_frequency);
         mFlowTagLayout_frequency.setOnTagSelectListener(new OnTagSelectListener() {
             @Override
             public void onItemSelect(FlowTagLayout parent, List<Integer> selectedList) {
-
+                if (selectedList != null && selectedList.size() > 0) {
+                    StringBuilder sb = new StringBuilder();
+                    for (int i : selectedList) {
+                        sb.append(parent.getAdapter().getItem(i));
+                    }
+                    frequency.setText("Frequency: " + sb.toString());
+                }
             }
         });
         initFrequency();
@@ -275,9 +282,12 @@ public class AddHomeService extends AppCompatActivity implements DatePickerDialo
         editText=new EditText(getApplicationContext());
         editText.setHint("Add Tag");
         editText.setMinEms(4);
+        editText.setHeight(53);
         editText.setTextSize(12);
+        editText.setBackgroundColor(Color.parseColor("#00000000"));
         editText.setHintTextColor(Color.parseColor("#b4b4b4"));
         editText.setTextColor(Color.parseColor("#000000"));
+        editText.setPadding(10,0,0,0);
         editText.setLayoutParams(params);
     }
 
