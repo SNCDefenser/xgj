@@ -7,6 +7,7 @@ var ItemInfoModel = {
     name:"default",
     type:0,// 0 - shopping list, 1 - stock, 2 - service
     tags:null,
+    places:null,
     description:"",
     actionDate:null,
     provider:null,
@@ -62,4 +63,4 @@ ItemDao.prototype.delete = function(id, callback){
     })
 }
 
-exports = module.exports = ItemDao;
+exports = module.exports = new ItemDao();

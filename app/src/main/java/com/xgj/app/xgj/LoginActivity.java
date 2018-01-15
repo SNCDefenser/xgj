@@ -78,9 +78,8 @@ public class LoginActivity extends AppCompatActivity {
 
         // Check if user is already logged in or not
         if (session.isLoggedIn()) {
-
-            Map<String, String> params = db.getUserDetails();
-
+            String email = emailText.getText().toString();
+            Map<String, String> params = db.getUserDetails(email);
             getOrVerifyToken(VERFIFY_TOKEN, params);
         }
     }
@@ -199,8 +198,11 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setEnabled(true);
         hideProgressDialog();
 
-        // User is already logged in. Take him to main activity
+        // User is already logged in. Take him to main activity, put the email address tranvers to the main activity page
+        Bundle bundle = new Bundle();
+        bundle.putString("email", emailText.getText().toString());
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        intent.putExtras(bundle);
         startActivity(intent);
         finish();
     }

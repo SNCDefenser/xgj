@@ -57,10 +57,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Fetching user details from sqlite
-        HashMap<String, String> user = db.getUserDetails();
+        String email = this.getIntent().getStringExtra("email");
+        HashMap<String, String> user = db.getUserDetails(email);
 
         String name = user.get("name");
-        String email = user.get("email");
 
         // Displaying the user details on the screen
         txtName.setText(name);

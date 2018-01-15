@@ -12,7 +12,6 @@ import java.util.HashMap;
 public class SQLiteHandler extends SQLiteOpenHelper {
 
     private static final String TAG = SQLiteHandler.class.getSimpleName();
-
     // All Static variables
     // Database Version
     private static final int DATABASE_VERSION = 1;
@@ -22,10 +21,13 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
     // Login table name
     private static final String TABLE_USER = "user";
+    private static final String TABLE_ITEM = "item";
 
     // Login Table Columns names
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
+    private static final String ITEM_ID = "id";
+    private static final String ITEM_NAME = "itemName";
     private static final String KEY_EMAIL = "email";
     private static final String KEY_TOKEN = "token";
 
@@ -39,8 +41,12 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                 + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT,"
                 + KEY_EMAIL + " TEXT UNIQUE," + KEY_TOKEN + " TEXT"+ ")";
 
-        db.execSQL(CREATE_LOGIN_TABLE);
+        String CREATE_ITEM_TABLE = "CREATE TABLE " + TABLE_ITEM + "("
+                + ITEM_ID + " INTEGER PRIMARY KEY," + ITEM_NAME + " TEXT" + ")";
+        String SELECT = "SELECT * FROM " + TABLE_USER;
 
+        db.execSQL(CREATE_LOGIN_TABLE);
+        db.execSQL(CREATE_ITEM_TABLE);
         Log.d(TAG, "Database tables created");
     }
 
@@ -48,6 +54,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ITEM);
 
         // Create tables again
         onCreate(db);
@@ -59,7 +66,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(KEY_NAME, name); // Name
         values.put(KEY_EMAIL, email); // Email
-        values.put(KEY_TOKEN, uid); // Email
+        values.put(KEY_TOKEN, uid); // Token
 
         // Inserting Row
         long id = db.insert(TABLE_USER, null, values);
@@ -68,19 +75,37 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         Log.d(TAG, "New user inserted into sqlite: " + id);
     }
 
-    public HashMap<String, String> getUserDetails() {
+    public void addItem(String name, String itemId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(ITEM_NAME, name); // Name
+        values.put(ITEM_ID, itemId); // itemid
+
+        // Inserting Row
+        long id = db.insert(TABLE_ITEM, null, values);
+        db.close(); // Closing database connection
+
+        Log.d(TAG, "New user inserted into sqlite: " + id);
+    }
+
+    public HashMap<String, String> getUserDetails(String email) {
         HashMap<String, String> user = new HashMap<String, String>();
+
         String selectQuery = "SELECT  * FROM " + TABLE_USER;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-        // Move to first row
-        cursor.moveToFirst();
-        if (cursor.getCount() > 0) {
-            user.put("name", cursor.getString(1));
-            user.put("email", cursor.getString(2));
-            user.put("token", cursor.getString(3));
+
+        while(cursor.moveToNext()){
+            if(cursor.getString(2).equals(email)){
+                user.put("name", cursor.getString(1));
+                user.put("email", cursor.getString(2));
+                user.put("token", cursor.getString(3));
+                break;
+            }
         }
+        cursor.moveToFirst();
         cursor.close();
         db.close();
         // return user

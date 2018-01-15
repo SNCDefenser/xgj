@@ -42,16 +42,19 @@ UserDao.prototype.findOneByEmail = function(email,callback){
 };
 
 UserDao.prototype.signUp = function(email, password,firstName, lastName, callback){
+    
     var doc = {
         email:email,
         password:password,
         firstName:firstName,
         lastName:lastName
     }
+
     var _ = this;
     MongoBaseDao.save(_.collectionName, doc, function(e, r){
         callback && callback(e, r);
     })
+
 }
 
 exports = module.exports = new UserDao();

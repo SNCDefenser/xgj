@@ -2,6 +2,7 @@ package com.xgj.app.xgj;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -13,6 +14,10 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.xgj.app.mylibrary.FlowTagLayout;
+import com.xgj.app.mylibrary.OnTagSelectListener;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +27,9 @@ import java.util.List;
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     private List<Item> itemList;
+    List<String> tags = new ArrayList<>();
+    FlowTagLayout mFlowTagLayout;
+    TagAdapter<String> mTagAdapter;
     static class ViewHolder extends RecyclerView.ViewHolder {
         View itemView;
         ImageView itemImage;
@@ -100,4 +108,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         itemList.remove(position);
         notifyItemRemoved(position);
     }
+
+
 }

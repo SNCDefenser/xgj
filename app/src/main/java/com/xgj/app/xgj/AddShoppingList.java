@@ -19,19 +19,30 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.xgj.app.mylibrary.*;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static android.R.id.list;
 
 public class AddShoppingList extends AppCompatActivity {
-
+    private static final String ADDTAG = "AddtoshoppingList";
+    private EditText name;
     List<String> places = new ArrayList<>();
     List<String> tags = new ArrayList<>();
-    List<String> selectedPlaces = new ArrayList<>();
-    List<String> selectedTags = new ArrayList<>();
+    Set<String> selectedPlaces = new HashSet<>();
+    Set<String> selectedTags = new HashSet<>();
     FlowTagLayout mFlowTagLayout_tag;
     TagAdapter<String> mTagAdapter_tag;
     FlowTagLayout mFlowTagLayout_tag_container;
@@ -39,7 +50,9 @@ public class AddShoppingList extends AppCompatActivity {
     List<TextView> tagView;
     List<Boolean> tagViewState;
     EditText editText;
-
+    String place;
+    private SessionManager session;
+//    private SQLiteHandler db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +65,14 @@ public class AddShoppingList extends AppCompatActivity {
                 finish();
             }
         });
-
+        Button btn_done = (Button) findViewById(R.id.btn_confirm);
+        btn_done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addItem();
+            }
+        });
+        name = (EditText) findViewById(R.id.editText);
         //add selected tags flowtaglayout
         mFlowTagLayout_tag_container = (FlowTagLayout) findViewById(R.id.tag_container);
         params=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -189,7 +209,9 @@ public class AddShoppingList extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                Toast.makeText(AddShoppingList.this,"You selected："+places.get(position),Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddShoppingList.this,"You selected："+places.get(position),Toast.LENGTH_SHORT).show();
+                place = places.get(position);
+
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -280,5 +302,113 @@ public class AddShoppingList extends AppCompatActivity {
         textView.setTextColor(getResources().getColor(R.color.normal_text_color));
         return  textView;
     }
+
+    public void addItem() {
+        Log.d(ADDTAG, "AddActivity");
+
+//        if (!validate()) {
+//            onSignupFailed();
+//            return;
+//        }
+
+//        signupButton.setEnabled(false);
+
+
+//        showProgressDialog();
+        String itemName = this.name.getText().toString();
+        Set<String> nameList = new HashSet<>();
+        Set<String> typeList = new HashSet<>();
+        typeList.add("0");
+        nameList.add(itemName);
+        selectedPlaces.add(place);
+        for(TextView view : tagView){
+            String curTag = view.getText().toString();
+            selectedTags.add(curTag);
+        }
+//        String tags =  selectedTags.toString();
+//        String place = selectedPlaces.toString();
+
+        final Map<String, Set<String>> items = new HashMap<>();
+        items.put("name",nameList);
+        items.put("tags",selectedTags);
+        items.put("places",selectedPlaces);
+        items.put("type", typeList);
+
+
+        // TODO: Implement your own signup logic here.
+
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        String url = XgjConfigs.API_Domain + XgjConfigs.API_URL_ADDITEM;
+
+                        XgjJSONObjectRequest req = new XgjJSONObjectRequest
+                                (Request.Method.POST, url, new JSONObject(items), new Response.Listener<JSONObject>() {
+
+                                    @Override
+                                    public void onResponse(JSONObject res) {
+                                        try {
+//                                            Log.d(TAG, res.toString());
+
+                                            // Now store the user in SQLite
+
+                                            JSONObject item = res.getJSONObject("item");
+                                            String name = item.getString("itemName");
+                                            String id = item.getString("id");
+
+//                                            db.addItem(name, id);
+
+//                                            onSignupSuccess();
+
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                            Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                }, new Response.ErrorListener() {
+
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        // TODO Auto-generated method stub
+//                                        onSignupFailed();
+                                    }
+
+                                });
+                        req.setTag(ADDTAG);
+
+                        AppController.getInstance().addToRequestQueue(req, ADDTAG);
+                    }
+                }, 3000);
+    }
+
+//    public boolean validate() {
+//        boolean valid = true;
+//
+//        String name = nameText.getText().toString();
+//        String email = emailText.getText().toString();
+//        String password = passwordText.getText().toString();
+//
+//        if (name.isEmpty() || name.length() < 3) {
+//            name.setError("at least 3 characters");
+//            valid = false;
+//        } else {
+//            name.setError(null);
+//        }
+//
+//        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+//            emailText.setError("enter a valid email address");
+//            valid = false;
+//        } else {
+//            emailText.setError(null);
+//        }
+//
+//        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
+//            passwordText.setError("between 4 and 10 alphanumeric characters");
+//            valid = false;
+//        } else {
+//            passwordText.setError(null);
+//        }
+//        return valid;
+//    }
 
 }
