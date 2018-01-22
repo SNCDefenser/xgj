@@ -18,6 +18,9 @@ public class AddItem extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String email = this.getIntent().getStringExtra("email");
+        final Bundle bundle = new Bundle();
+        bundle.putString("email", email);
         setContentView(R.layout.activity_add_item);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -29,6 +32,7 @@ public class AddItem extends AppCompatActivity {
         btn_shopping_cart.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(AddItem.this, AddShoppingList.class);
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
@@ -36,6 +40,7 @@ public class AddItem extends AppCompatActivity {
         btn_stock.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(AddItem.this, AddStock.class);
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });

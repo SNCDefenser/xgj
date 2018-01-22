@@ -42,10 +42,27 @@ ItemDao.prototype.findOneById = function(id, fields, callback){
     })
 };
 
-ItemDao.prototype.insert = function(item, callback){
+ItemDao.prototype.findOneByOwner = function(owner,callback){
+    this.getCollection(function(collection){
+        collection.findOne({'owner':owner},function(e, r) {
+            callback && callback(e, r);
+        });
+    });
+};
+
+ItemDao.prototype.insert = function(owner, name, tags, places, type, callback){
+    
+    var item = {
+        owner: owner,
+        name: name,
+        tags: tags,
+        places: places,
+        type: type
+    }
+    
     var _ = this;
     MongoBaseDao.save(_.collectionName, item, function(e, r){
-        callback && callback(e, r);
+        callback && callback(null, {item: item});
     })
 }
 

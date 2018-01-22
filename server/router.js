@@ -32,10 +32,14 @@ router.post('/signUp',
             var password = req.body.password;
            
             UserDao.signUp(email, password, firstName, lastName,function(e,r){
+                console.log("here is the request")
+                console.log(req)
                 if(e){
                     throw e;
                 }
                 authJWT.signJWT(email, password, function(e, r){
+                    console.log("here is the response");
+                    console.log(r);
                     if(e){
                         res.status(200).send({error:true, errorMsg:e});
                         return;
@@ -62,14 +66,12 @@ router.get('/getUser', function(req, res){
         });
     }catch(e){
         var error = {msg:e.message, stack:e.stack};
-        res.send(500, error)
+        res.send(500, error);
     }
 })
 
 router.post('/Authorize', 
 function(req, res) {
-    console.log(req);
-    console.log(res);
     var token = req.body.token;
     var email = req.body.email;
     authJWT.verify(token,email, function(e, r){
@@ -83,21 +85,36 @@ function(req, res) {
 
 router.post('/addItem',
     function(req, res){
-        var owner = req.body.owner;
-        var name= req.body.name;
-        var tags = req.body.tags;
-        var type = req.body.type;
-        var places = req.body.places;
-        // var owner = req.body.owner;
-
-        var item = {
-            owner: owner,
-            name: name,
-            tags: tags,
-            places: places,
-            type: type
+        try{
+            var owner = req.body.owner;
+            var name= req.body.name;
+            var tags = req.body.tags;
+            var type = req.body.type;
+            var places = req.body.places;
+            console.log("here is the request")
+            console.log(req)
+        
+            ItemDao.insert(owner, name, tags, places, type, function(e, r){
+                console.log("here is the response");
+                console.log(r);
+                if(e){
+                    res.status(200).send({error:true, errorMsg:e});
+                    return;
+                }
+                res.status(200).send(r);
+            })
+        }catch(e){
+            var error = {msg:e.message, stack:e.stack};
+            res.send(500, error);
         }
-        ItemDao.insert(item, function(e, r){
+        
+    }
+);
+
+router.get('/getItem',
+    function(req, res){
+        var owner = req.query.owner;
+        ItemDao.findOneByOwner(owner, function(e, r){
             if(e){
                 res.status(200).send({error:true, errorMsg:e});
                 return;

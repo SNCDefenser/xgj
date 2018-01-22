@@ -22,12 +22,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        String email = this.getIntent().getStringExtra("email");
+        final Bundle bundle = new Bundle();
+        bundle.putString("email", email);
 
         Button shoppingList = (Button) findViewById(R.id.shopping_List);
         shoppingList.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 Intent intent = new Intent(MainActivity.this,ShoppingListActivity.class);
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
@@ -37,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, AddItem.class);
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
@@ -57,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Fetching user details from sqlite
-        String email = this.getIntent().getStringExtra("email");
+
         HashMap<String, String> user = db.getUserDetails(email);
 
         String name = user.get("name");
@@ -82,8 +87,6 @@ public class MainActivity extends AppCompatActivity {
      * */
     private void logoutUser() {
         session.setLogin(false);
-
-        db.deleteUsers();
 
         // Launching the login activity
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);

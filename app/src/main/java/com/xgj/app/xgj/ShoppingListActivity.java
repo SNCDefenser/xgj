@@ -16,6 +16,7 @@ import com.xgj.app.mylibrary.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ShoppingListActivity extends AppCompatActivity {
 
@@ -23,12 +24,19 @@ public class ShoppingListActivity extends AppCompatActivity {
     List<String> tags = new ArrayList<>();
     FlowTagLayout mFlowTagLayout;
     TagAdapter<String> mTagAdapter;
+    String ownerEmail;
+    private SQLiteHandler db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_list);
+        db = new SQLiteHandler(getApplicationContext());
+        ownerEmail = this.getIntent().getStringExtra("email");
+        Map<String, Map<String, String>> items = db.getItemDetails(ownerEmail);
+        ownerEmail = this.getIntent().getStringExtra("email");
         initButton();
-        initItem();
+        initItem(items);
+
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.Recycle_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         createTag();
@@ -37,12 +45,12 @@ public class ShoppingListActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
-    private void initItem(){
-        for(int i = 0; i < 1; i++){
-            Item apple = new Item("Apple", R.drawable.ic_account_circle_black_24px);
-            Item banana = new Item("Banana", R.drawable.ic_account_circle_black_24px);
-            itemList.add(apple);
-            itemList.add(banana);
+    private void initItem(Map<String, Map<String, String>> items){
+
+        for(String s: items.keySet()){
+
+            Item item = new Item(s, R.drawable.ic_account_circle_black_24px);
+         itemList.add(item);
         }
     }
     private void initButton(){

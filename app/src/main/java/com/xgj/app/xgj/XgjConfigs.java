@@ -10,4 +10,5 @@ public class XgjConfigs {
     public static final String API_URL_AUTHORIZE = "/Authorize";
     public static final String API_URL_SIGNUP = "/signUp";
     public static final String API_URL_ADDITEM = "/addItem";
+    public static final String API_URL_GETITEM = "/getItem";
 }

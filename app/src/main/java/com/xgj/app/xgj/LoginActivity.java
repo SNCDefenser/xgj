@@ -144,30 +144,12 @@ public class LoginActivity extends AppCompatActivity {
 
         XgjJSONObjectRequest req = new XgjJSONObjectRequest
                 (Request.Method.POST, url, new JSONObject(params), new Response.Listener<JSONObject>() {
-
                     @Override
                     public void onResponse(JSONObject res) {
-
-                        try {
-                            Log.d(TAG, res.toString());
-
-                            session.setLogin(true);
-
-                            // Now store the user in SQLite
-                            String token = res.getString("token");
-
-                            JSONObject user = res.getJSONObject("user");
-                            String name = user.getString("name");
-                            String email = user.getString("email");
-
-                            db.addUser(name, email, token);
-
-                            onLoginSuccess();
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                        }
+                        //No need ot add user into the local database again?
+                        Log.d(TAG, res.toString());
+                        session.setLogin(true);
+                        onLoginSuccess();
                     }
                 }, new Response.ErrorListener() {
 

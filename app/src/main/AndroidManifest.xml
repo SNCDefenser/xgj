@@ -42,7 +42,8 @@
         </activity>
 
         <activity android:name=".AddShoppingList"
-            android:label="@string/shopping_list">
+            android:label="@string/shopping_list"
+            >
         </activity>
 
         <activity android:name=".AddStock" />
